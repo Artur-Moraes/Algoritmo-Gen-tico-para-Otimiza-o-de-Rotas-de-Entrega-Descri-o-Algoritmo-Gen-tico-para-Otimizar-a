@@ -49,30 +49,6 @@ def calcSatisfacao(arr_ordem):
 
     return satisfacao_total
 
-ordem_entrega = [0, 1, 2, 0]  
-satisfacao = calcSatisfacao(ordem_entrega)
-print(satisfacao)  
-
-
-
-def avaliacaoRota(lista_clientes):
-    tempo_total = 0
-
-    for i in range(len(lista_clientes) - 1):
-        cliente_atual = lista_clientes[i]
-        proximo_cliente = lista_clientes[i + 1]
-
-        x = getDistancia(*posicoes[cliente_atual], *posicoes[0]) 
-        y = getDistancia(*posicoes[cliente_atual], *posicoes[proximo_cliente])  
-
-        tempo_total += x + y
-
-    return tempo_total
-
-clientes_rota = [0, 1, 2]  
-avaliacao = avaliacaoRota(clientes_rota)
-print(avaliacao)  
-
 base_1 = [
     {"nome": "Cliente 1", "x": 10, "y": 0, "quantidade_pedidos": 3},
     {"nome": "Cliente 2", "x": 1, "y": 13, "quantidade_pedidos": 2},
