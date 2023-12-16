@@ -74,3 +74,29 @@ for i, posicaoCliente in enumerate(posicoes[1:], start=1):
     satisfacaoCliente = getSa7sfacao(posicaoCliente, tempoEntrega)
     print(f"A satisfação do cliente {i} com o tempo de entrega de {tempoEntrega} minutos é: {satisfacaoCliente}")
 
+
+"""
+
+----------------------------------------------------------------------------------------
+                Parte para calcular a distância do cliente para sede ou outro cliente
+----------------------------------------------------------------------------------------
+
+"""
+
+
+def getDistancia(x1, y1, x2, y2):
+    distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    return distancia
+
+# Teste unitáiro para saber se está funcionando para pontos específicos
+distanciaPontos = getDistancia(25, 5, 7, 5)
+print(f"A distância entre os pontos é: {round(distanciaPontos)} unidades")
+
+def getDistanciaPorIndice(indice1, indice2):
+    x1, y1 = posicoes[indice1]
+    x2, y2 = posicoes[indice2]
+    distancia = getDistancia(x1, y1, x2, y2)
+    return distancia
+
+distanciaClientes = getDistanciaPorIndice(1, 2)
+print(f"A distância entre os clientes é: {round(distanciaClientes)} unidades")
