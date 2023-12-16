@@ -1,3 +1,4 @@
+import math
 
 posicoes = [[10, 0], [1, 13], [30, 4]]
 distancias = [((pos[0] - posicoes[0][0])**2 + (pos[1] - posicoes[0][1])**2)**0.5 for pos in posicoes[1:]]
@@ -73,8 +74,7 @@ for i, posicaoCliente in enumerate(posicoes[1:], start=1):
     tempoEntrega = tempoTolerancia[i - 1]  
     satisfacaoCliente = getSa7sfacao(posicaoCliente, tempoEntrega)
     print(f"A satisfação do cliente {i} com o tempo de entrega de {tempoEntrega} minutos é: {satisfacaoCliente}")
-
-
+    
 """
 
 ----------------------------------------------------------------------------------------
@@ -83,12 +83,10 @@ for i, posicaoCliente in enumerate(posicoes[1:], start=1):
 
 """
 
-
 def getDistancia(x1, y1, x2, y2):
     distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     return distancia
 
-# Teste unitáiro para saber se está funcionando para pontos específicos
 distanciaPontos = getDistancia(25, 5, 7, 5)
 print(f"A distância entre os pontos é: {round(distanciaPontos)} unidades")
 
@@ -100,3 +98,21 @@ def getDistanciaPorIndice(indice1, indice2):
 
 distanciaClientes = getDistanciaPorIndice(1, 2)
 print(f"A distância entre os clientes é: {round(distanciaClientes)} unidades")
+
+
+def getDistancia(x, y):
+    distancia = 0
+    for i in range(len(x) - 1):
+        distanciaParcial = math.sqrt((x[i + 1] - x[i])**2 + (y[i + 1] - y[i])**2)
+        distancia += distanciaParcial
+    return distancia
+
+# Testando a função com uma sequência de coordenadas
+coordenadas_x = [10, 1, 30]
+coordenadas_y = [0, 13, 4, 5, 7, 8]
+
+distanciaTotal = getDistancia(coordenadas_x, coordenadas_y)
+print(f"A distância total entre as coordenadas é: {round(distanciaTotal)} unidades")
+   
+
+
