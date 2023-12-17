@@ -84,7 +84,7 @@ def mutacao(individuo):
 def selecionarMelhores(populacao, base_clientes):
     return sorted(populacao, key=lambda x: fitness(x, base_clientes))
 
-maxGeracao = 10
+maxGeracao = 10000
 atualGeracao = 0
 
 while atualGeracao < maxGeracao:
