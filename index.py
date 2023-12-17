@@ -1,118 +1,114 @@
+import random
 import math
 
-posicoes = [[10, 0], [1, 13], [30, 4]]
-distancias = [((pos[0] - posicoes[0][0])**2 + (pos[1] - posicoes[0][1])**2)**0.5 for pos in posicoes[1:]]
-tempoTolerancia = [int(distancia * 1.5) for distancia in distancias]
+cargaAtual = 4
 
-for i, distancia in enumerate(distancias):
-    print(f"Distância do cliente {i + 1} para a sede: {round(distancia)} unidades")
-    print(f"Tempo de tolerância do cliente {i + 1}: {round(tempoTolerancia[i])} minutos")
+def gerar_base_clientes(qnt_clientes):
+    base_clientes = []
+    for i in range(qnt_clientes):
+        qtd_pedidos = random.randint(1, 4)
+        cliente = {
+            'nome': f'Cliente_{i+1}',
+            'posicao_x': random.randint(0, 50),
+            'posicao_y': random.randint(0, 50),  
+            'qtd_pedidos': qtd_pedidos  
+        }
+        base_clientes.append(cliente)
+    return base_clientes
 
-pedido = [[1, 4], [3, 3], [2, 1]]
-informacaoPedido = [{'cliente': p[0], 'quantidade de água': p[1]} for p in pedido]
+def imprimir_base_clientes(base_clientes):
+    for cliente in base_clientes:
+        print(f"Cliente: {cliente['nome']} - Posição: ({cliente['posicao_x']}, {cliente['posicao_y']}) - Qtd. Pedidos: {cliente['qtd_pedidos']}")
 
-for info in informacaoPedido:
-    print(f"Cliente {info['cliente']} pediu {info['quantidade de água']} galões de água.")
+base_1 = gerar_base_clientes(5)
+base_2 = gerar_base_clientes(10)
+base_3 = gerar_base_clientes(30)
 
-"""
+print("Base 1:")
+imprimir_base_clientes(base_1)
 
-----------------------------------------------------------------------------------------
-                Parte para Calcular a satisfação do cliente
-----------------------------------------------------------------------------------------
+print("\nBase 2:")
+imprimir_base_clientes(base_2)
 
-"""
-
-def getSa7sfacao(posicaoCliente, tempoEntrega):
-    
-    indiceCliente = -1
-    for i, posicao in enumerate(posicoes):
-        if posicao == posicaoCliente:
-            indiceCliente = i
-            break
-    
-    if indiceCliente == -1:
-        return "Cliente não encontrado"
-    
-    tempo_tolerancia = tempoTolerancia[indiceCliente - 1] if indiceCliente > 0 else 0
-    
-    if tempoEntrega == tempo_tolerancia:
-        return 6
-    elif tempoEntrega < tempo_tolerancia / 2:
-        return 10
-    elif tempoEntrega < tempo_tolerancia:
-        return 8
-    elif tempoEntrega <= tempo_tolerancia * 1.1:
-        return 5
-    elif tempoEntrega <= tempo_tolerancia * 1.2:
-        return 4
-    elif tempoEntrega <= tempo_tolerancia * 1.4:
-        return 3
-    elif tempoEntrega <= tempo_tolerancia * 1.6:
-        return 2
-    elif tempoEntrega <= tempo_tolerancia * 1.8:
-        return 1
-    else:
-        return 0
+print("\nBase 3:")
+imprimir_base_clientes(base_3)
 
 
-"""
+def criar_individuo(base_clientes):
+    return random.sample(range(len(base_clientes)), len(base_clientes))
 
-----------------------------------------------------------------------------------------
-                Parte para mostra satisfação com tempo de entrega
-----------------------------------------------------------------------------------------
+def criar_populacao(tamanho_populacao, base_clientes):
+    return [criar_individuo(base_clientes) for _ in range(tamanho_populacao)]
 
-"""
+def calcular_distancia(cliente1, cliente2):
+    x1, y1 = cliente1['posicao_x'], cliente1['posicao_y']
+    x2, y2 = cliente2['posicao_x'], cliente2['posicao_y']
 
-#Teste para unitário de cliente com o tempo de entrega 
-posicaoCliente = posicoes[1]
-tempoEntrega = 15
-satisfacaoCliente = getSa7sfacao(posicaoCliente, tempoEntrega)
-print(f"A satisfação do cliente com o tempo de entrega de {tempoEntrega} minutos é: {satisfacaoCliente}")
-#--------------------------------------------------------------------------------------------------------
-
-for i, posicaoCliente in enumerate(posicoes[1:], start=1):
-    tempoEntrega = tempoTolerancia[i - 1]  
-    satisfacaoCliente = getSa7sfacao(posicaoCliente, tempoEntrega)
-    print(f"A satisfação do cliente {i} com o tempo de entrega de {tempoEntrega} minutos é: {satisfacaoCliente}")
-    
-"""
-
-----------------------------------------------------------------------------------------
-                Parte para calcular a distância do cliente para sede ou outro cliente
-----------------------------------------------------------------------------------------
-
-"""
-
-def getDistancia(x1, y1, x2, y2):
-    distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    distancia = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
     return distancia
 
-distanciaPontos = getDistancia(25, 5, 7, 5)
-print(f"A distância entre os pontos é: {round(distanciaPontos)} unidades")
+def calcular_distancia_total(rota, base_clientes):
+    distancia_total = 0.0
 
-def getDistanciaPorIndice(indice1, indice2):
-    x1, y1 = posicoes[indice1]
-    x2, y2 = posicoes[indice2]
-    distancia = getDistancia(x1, y1, x2, y2)
-    return distancia
+    for i in range(len(rota) - 1):
+        cliente_atual = base_clientes[rota[i]]
+        proximo_cliente = base_clientes[rota[i + 1]]
 
-distanciaClientes = getDistanciaPorIndice(1, 2)
-print(f"A distância entre os clientes é: {round(distanciaClientes)} unidades")
+        distancia = calcular_distancia(cliente_atual, proximo_cliente)
+        distancia_total += distancia
 
+    primeiro_cliente = base_clientes[rota[0]]
+    ultimo_cliente = base_clientes[rota[-1]]
+    distancia_total += calcular_distancia(ultimo_cliente, primeiro_cliente)
 
-def getDistancia(x, y):
-    distancia = 0
-    for i in range(len(x) - 1):
-        distanciaParcial = math.sqrt((x[i + 1] - x[i])**2 + (y[i + 1] - y[i])**2)
-        distancia += distanciaParcial
-    return distancia
+    return distancia_total
 
-# Testando a função com uma sequência de coordenadas
-coordenadas_x = [10, 1, 30]
-coordenadas_y = [0, 13, 4, 5, 7, 8]
+def fitness(rota, base_clientes):
+    return calcular_distancia_total(rota, base_clientes)
 
-distanciaTotal = getDistancia(coordenadas_x, coordenadas_y)
-print(f"A distância total entre as coordenadas é: {round(distanciaTotal)} unidades")
-   
+base_clientes = gerar_base_clientes(50)
+populacao = criar_populacao(10, base_clientes)
 
+def crossover(pai1, pai2):
+    ponto_corte = random.randint(1, min(len(pai1), len(pai2)) - 1)
 
+    filho1 = pai1[:ponto_corte] + pai2[ponto_corte:]
+    filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
+
+    return filho1, filho2
+
+def mutacao(individuo):
+    indice1, indice2 = random.sample(range(len(individuo)), 2)
+    individuo[indice1], individuo[indice2] = individuo[indice2], individuo[indice1]
+
+def selecionarMelhores(populacao, base_clientes):
+    return sorted(populacao, key=lambda x: fitness(x, base_clientes))
+
+maxGeracao = 10
+atualGeracao = 0
+
+while atualGeracao < maxGeracao:
+    populacao = selecionarMelhores(populacao, base_clientes)
+    melhoresIndividuos = populacao[:2]
+
+    nova_populacao = melhoresIndividuos.copy()
+
+    for _ in range(4):
+        pai1, pai2 = random.sample(melhoresIndividuos, 2)
+        filho1, filho2 = crossover(pai1, pai2)
+        
+        if random.random() < 0.1:  
+            mutacao(filho1)
+        if random.random() < 0.1:
+            mutacao(filho2)
+
+        nova_populacao.extend([filho1, filho2])
+
+    populacao = nova_populacao
+    atualGeracao += 1
+
+melhor_rota = selecionarMelhores(populacao, base_clientes)[0]
+distancia_melhor_rota = calcular_distancia_total(melhor_rota, base_clientes)
+
+print("Melhor rota:", melhor_rota)
+print("Distância da melhor rota:", round(distancia_melhor_rota))
