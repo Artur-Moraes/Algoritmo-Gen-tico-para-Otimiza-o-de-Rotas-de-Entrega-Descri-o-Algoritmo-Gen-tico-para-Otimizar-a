@@ -112,3 +112,50 @@ distancia_melhor_rota = calcular_distancia_total(melhor_rota, base_clientes)
 
 print("Melhor rota:", melhor_rota)
 print("Distância da melhor rota:", round(distancia_melhor_rota))
+
+''' 
+Pedidos dos clientes
+0 é a sede
+O cliente 1 pediu 1 água. 
+O cliente 2 duas águas, 
+O cliente 3 2 águas... 
+'''
+
+
+clients =  [0,4,1,3,2,4,2,3,1,4,3,1,4,3,2,4,2,3,1,3,4,1,4,3,1,2,3,1,1,1,1]
+print(len(clients))
+#ordem das entregas
+order_delivery = [0, 28, 7, 0, 27, 0, 8, 30, 0, 2, 10, 0, 27, 0, 13, 0, 2, 10, 0, 23, 7, 0, 8, 3, 0, 15, 0, 28, 14, 21, 8, 0, 9, 0, 28, 11, 0, 14, 28, 0, 29, 18, 0, 12]
+#capacidade atual
+capacity = 4
+#clientes nao atendidos
+no_served = []
+#movimentos desnecessários
+move_useless = 0
+#cliente duplicado
+duplicate_served = 0
+duplicate_client = []
+served = []
+
+for i in range(0,len(order_delivery)):
+    if(order_delivery[i] == 0 ):
+        if(capacity == 4):
+            move_useless+=1
+        capacity = 4
+    if(capacity >= clients[ order_delivery[i] ] ):
+        capacity -= clients[ order_delivery[i] ]
+        if(order_delivery[i]!=0 and order_delivery[i] in served):
+            duplicate_served+=1
+            duplicate_client.append( order_delivery[i] )
+            
+        served.append(order_delivery[i])
+    else:
+        no_served.append( order_delivery[i] )
+        
+
+print(len(no_served), " - clientes nao atendidos")
+print( no_served )
+print("movimento desnecessário")
+print( move_useless )
+print(duplicate_served, " - clientes atendidos em duplicidade")
+print( duplicate_client )
