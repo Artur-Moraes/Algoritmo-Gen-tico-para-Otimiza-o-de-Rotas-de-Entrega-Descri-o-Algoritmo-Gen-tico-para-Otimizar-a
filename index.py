@@ -141,22 +141,36 @@ def algoritmo_genetico(populacao_inicial, geracoes, base_clientes):
 
     return melhor_rota, satisfacao_total, tempo_total_entregas
 
-# Geração de Bases de Clientes
-base_clientes = gerar_base_clientes(50)
+# Exemplo para Base 1
+base_1 = gerar_base_clientes(5)
+imprimir_base_clientes(base_1)
+populacao_1 = criar_populacao(10, base_1)
+melhor_rota_1, satisfacao_total_1, tempo_total_entregas_1 = algoritmo_genetico(populacao_1, 10000, base_1)
 
-# Criação da População Inicial
-populacao = criar_populacao(10, base_clientes)
+# Exemplo para Base 2
+base_2 = gerar_base_clientes(10)
+imprimir_base_clientes(base_2)
+populacao_2 = criar_populacao(10, base_2)
+melhor_rota_2, satisfacao_total_2, tempo_total_entregas_2 = algoritmo_genetico(populacao_2, 10000, base_2)
+
+# Exemplo para Base 3
+base_3 = gerar_base_clientes(30)
+imprimir_base_clientes(base_3)
+populacao_3 = criar_populacao(10, base_3)
+melhor_rota_3, satisfacao_total_3, tempo_total_entregas_3 = algoritmo_genetico(populacao_3, 10000, base_3)
 
 # Parâmetros do Algoritmo Genético
 max_geracao = 10000
 
 # Execução do Algoritmo Genético
-melhor_rota, satisfacao_total, tempo_total_entregas = algoritmo_genetico(populacao, max_geracao, base_clientes)
+# Base 1 com 5 clientes
+base_1 = gerar_base_clientes(5)
+populacao_1 = criar_populacao(10, base_1)
+melhor_rota_1, satisfacao_total_1, tempo_total_entregas_1 = algoritmo_genetico(populacao_1, max_geracao, base_1)
 
 # Simulação de Entregas e Análise Adicional:
-
-clients = [0, 4, 1, 3, 2, 4, 2, 3, 1, 4, 3, 1, 4, 3, 2, 4, 2, 3, 1, 3, 4, 1, 4, 3, 1, 2, 3, 1, 1, 1, 1]
-order_delivery = [0, 28, 7, 0, 27, 0, 8, 30, 0, 2, 10, 0, 27, 0, 13, 0, 2, 10, 0, 23, 7, 0, 8, 3, 0, 15, 0, 28, 14, 21, 8, 0, 9, 0, 28, 11, 0, 14, 28, 0, 29, 18, 0, 12]
+clients_1 = [cliente['qtd_pedidos'] for cliente in base_1]
+order_delivery_1 = melhor_rota_1  # Melhor rota da Base 1
 capacity = 4
 no_served = []
 move_useless = 0
@@ -165,28 +179,49 @@ duplicate_client = []
 served = []
 satisfacao_total_clientes = []
 
-for i in range(0, len(order_delivery)):
-    if order_delivery[i] == 0:
+# Para garantir que a simulação use a base correta
+base_clientes = base_1
+
+for i in range(0, len(order_delivery_1)):
+    if order_delivery_1[i] == 0:
         if capacity == 4:
             move_useless += 1
         capacity = 4
-    if capacity >= clients[order_delivery[i]]:
-        capacity -= clients[order_delivery[i]]
-        if order_delivery[i] != 0 and order_delivery[i] in served:
+    if capacity >= clients_1[order_delivery_1[i]]:
+        capacity -= clients_1[order_delivery_1[i]]
+        if order_delivery_1[i] != 0 and order_delivery_1[i] in served:
             duplicate_served += 1
-            duplicate_client.append(order_delivery[i])
+            duplicate_client.append(order_delivery_1[i])
 
-        served.append(order_delivery[i])
-        satisfacao_total_clientes.append(calcular_satisfacao(base_clientes[order_delivery[i-1]], base_clientes[order_delivery[i]]))
+        served.append(order_delivery_1[i])
+        satisfacao_total_clientes.append(calcular_satisfacao(base_clientes[order_delivery_1[i-1]], base_clientes[order_delivery_1[i]]))
     else:
-        no_served.append(order_delivery[i])
+        no_served.append(order_delivery_1[i])
 
 
-print(f"\nMelhor rota: {melhor_rota}")
-print(f"Distância da melhor rota: {round(fitness(melhor_rota, base_clientes), 1)}")
-print(f"Satisfação total da melhor rota: {round(satisfacao_total, 1)}")
-print(f"Tempo total das entregas: {round(tempo_total_entregas, 1)} segundos")
-print(f"Clientes não atendidos ({len(no_served)}): {no_served}")
-print(f"Quantidade de movimentos desnecessários: {move_useless}")
-print(f"Clientes atendidos em duplicidade ({duplicate_served}): {duplicate_client}")
-print(f"Satisfação total dos clientes atendidos: {round(sum(satisfacao_total_clientes), 1)}")
+print(f"\nMelhor rota Base 1: {melhor_rota_1}")
+print(f"Distância da melhor rota Base 1: {round(fitness(melhor_rota_1, base_1), 1)}")
+print(f"Satisfação total da melhor rota Base 1: {round(satisfacao_total_1, 1)}")
+print(f"Tempo total das entregas Base 1: {round(tempo_total_entregas_1, 1)} segundos")
+print(f"Clientes não atendidos Base 1 ({len(no_served)}): {no_served}")
+print(f"Quantidade de movimentos desnecessários Base 1: {move_useless}")
+print(f"Clientes atendidos em duplicidade Base 1 ({duplicate_served}): {duplicate_client}")
+print(f"Satisfação total dos clientes atendidos Base 1: {round(sum(satisfacao_total_clientes), 1)}")
+
+print(f"\nMelhor rota Base 2: {melhor_rota_2}")
+print(f"Distância da melhor rota Base 2: {round(fitness(melhor_rota_2, base_2), 1)}")
+print(f"Satisfação total da melhor rota Base 2: {round(satisfacao_total_2, 1)}")
+print(f"Tempo total das entregas Base 2: {round(tempo_total_entregas_2, 1)} segundos")
+print(f"Clientes não atendidos Base 2 ({len(no_served)}): {no_served}")
+print(f"Quantidade de movimentos desnecessários Base 2: {move_useless}")
+print(f"Clientes atendidos em duplicidade Base 2 ({duplicate_served}): {duplicate_client}")
+print(f"Satisfação total dos clientes atendidos Base 2: {round(sum(satisfacao_total_clientes), 1)}")
+
+print(f"\nMelhor rota Base 3: {melhor_rota_3}")
+print(f"Distância da melhor rota Base 3: {round(fitness(melhor_rota_3, base_3), 1)}")
+print(f"Satisfação total da melhor rota Base 3: {round(satisfacao_total_3, 1)}")
+print(f"Tempo total das entregas Base 3: {round(tempo_total_entregas_3, 1)} segundos")
+print(f"Clientes não atendidos Base 3 ({len(no_served)}): {no_served}")
+print(f"Quantidade de movimentos desnecessários Base 3: {move_useless}")
+print(f"Clientes atendidos em duplicidade Base 3 ({duplicate_served}): {duplicate_client}")
+print(f"Satisfação total dos clientes atendidos Base 3: {round(sum(satisfacao_total_clientes), 1)}")
